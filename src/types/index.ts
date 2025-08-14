@@ -73,7 +73,6 @@ export interface RecurrenceBuilderProps {
     showMultipleTimes?: boolean;
     showTimeRange?: boolean;
   };
-  defaultFrequency?: FrequencyType;
   collapsible?: boolean;
   defaultCollapsed?: boolean;
   showThemeToggle?: boolean;

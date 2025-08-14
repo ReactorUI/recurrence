@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronRight, Sun, Moon, Monitor } from 'lucide-react';
 import { clsx } from 'clsx';
 import { RecurrenceBuilderProps, RecurrenceType } from '../types';
@@ -23,7 +23,6 @@ export function RecurrenceBuilder({
     showMultipleTimes: true,
     showTimeRange: true,
   },
-  defaultFrequency = 'once',
   collapsible = true,
   defaultCollapsed = true,
   showThemeToggle = false,
@@ -116,7 +115,6 @@ export function RecurrenceBuilder({
         onChange={(frequency) => updateSettings({ frequency })}
         maxOccurrences={maxOccurrences}
         showOptions={showFrequencyOptions}
-        defaultType={defaultFrequency}
       />
 
       <EndOptions

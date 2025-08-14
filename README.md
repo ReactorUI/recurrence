@@ -879,11 +879,6 @@ Part of the ReactorUI ecosystem:
 - 📊 [@reactorui/datagrid](https://www.npmjs.com/package/@reactorui/datagrid) - Advanced data grid component
 - 🔜 More components coming soon!
 
-## Author
-
-**Name:** Miracle<br>
-**GitHub:** [@code-Miracle49](https://github.com/code-Miracle49)
-
 ---
 
 **Made with ❤️ by ReactorUI**

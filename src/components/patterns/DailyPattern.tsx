@@ -1,4 +1,3 @@
-import React from 'react';
 import { DailySettings } from '../../types';
 
 interface DailyPatternProps {

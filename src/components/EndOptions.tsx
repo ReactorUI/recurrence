@@ -1,4 +1,3 @@
-import React from 'react';
 import { EndSettings, EndType } from '../types';
 import { formatDateTime } from '../utils';
 

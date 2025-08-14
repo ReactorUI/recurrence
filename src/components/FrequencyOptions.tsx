@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Plus, X } from 'lucide-react';
-import { clsx } from 'clsx';
 import { FrequencySettings, FrequencyType } from '../types';
 import { useTimeSlots } from '../hooks';
 import {
@@ -19,7 +18,6 @@ interface FrequencyOptionsProps {
     showMultipleTimes?: boolean;
     showTimeRange?: boolean;
   };
-  defaultType?: FrequencyType;
 }
 
 export function FrequencyOptions({
@@ -31,7 +29,6 @@ export function FrequencyOptions({
     showMultipleTimes: true,
     showTimeRange: true,
   },
-  defaultType = 'once',
 }: FrequencyOptionsProps) {
   const {
     timeSlots,

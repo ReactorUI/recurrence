@@ -1,13 +1,14 @@
 {
   "name": "@reactorui/recurrence",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A powerful, flexible recurrence rule builder for React applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "dev": "vite",
@@ -39,27 +40,6 @@
       "!src/**/*.d.ts"
     ]
   },
-  "keywords": [
-    "react",
-    "recurrence",
-    "rrule",
-    "calendar",
-    "scheduling",
-    "date",
-    "recurring",
-    "ui",
-    "component"
-  ],
-  "author": "ReactorUI",
-  "license": "MIT",
-  "homepage": "https://github.com/ReactorUI/recurrence#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ReactorUI/recurrence.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ReactorUI/recurrence/issues"
-  },
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
@@ -84,5 +64,26 @@
     "prettier": "^3.0.0",
     "eslint-config-prettier": "^9.0.0",
     "tsup": "^7.2.0"
+  },
+  "keywords": [
+    "react",
+    "recurrence",
+    "rrule",
+    "calendar",
+    "scheduling",
+    "date",
+    "recurring",
+    "ui",
+    "component"
+  ],
+  "author": "ReactorUI",
+  "license": "MIT",
+  "homepage": "https://github.com/ReactorUI/recurrence#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReactorUI/recurrence.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ReactorUI/recurrence/issues"
   }
 }

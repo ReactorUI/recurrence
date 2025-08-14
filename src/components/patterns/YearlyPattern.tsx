@@ -1,4 +1,3 @@
-import React from 'react';
 import { YearlySettings } from '../../types';
 import { MONTHS, WEEK_POSITIONS, WEEKDAY_OPTIONS } from '../../utils';
 

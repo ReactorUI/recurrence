@@ -1,4 +1,3 @@
-import React from 'react';
 import { clsx } from 'clsx';
 import { WeeklySettings, WeekDay } from '../../types';
 import { WEEK_DAYS } from '../../utils';

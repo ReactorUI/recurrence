@@ -91,9 +91,15 @@ const defaultTheme: RecurrenceTheme = {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
+// Export the context for direct access
+export { ThemeContext };
+
 interface ThemeProviderProps {
   children: ReactNode;
-  customTheme?: Partial<RecurrenceTheme>;
+  customTheme?: {
+    light?: Partial<ThemeConfig>;
+    dark?: Partial<ThemeConfig>;
+  };
   defaultMode?: ThemeMode;
   enableSystemTheme?: boolean;
 }
@@ -107,10 +113,64 @@ export function ThemeProvider({
   const [mode, setMode] = useState<ThemeMode>(defaultMode);
   const [systemMode, setSystemMode] = useState<'light' | 'dark'>('light');
 
-  // Merge custom theme with default theme
+  // Merge custom theme with default theme using deep merge
   const mergedTheme: RecurrenceTheme = {
-    light: { ...defaultTheme.light, ...customTheme?.light },
-    dark: { ...defaultTheme.dark, ...customTheme?.dark },
+    light: {
+      ...defaultTheme.light,
+      ...customTheme?.light,
+      colors: {
+        ...defaultTheme.light.colors,
+        ...customTheme?.light?.colors,
+        text: {
+          ...defaultTheme.light.colors.text,
+          ...customTheme?.light?.colors?.text,
+        },
+        accent: {
+          ...defaultTheme.light.colors.accent,
+          ...customTheme?.light?.colors?.accent,
+        },
+      },
+      spacing: {
+        ...defaultTheme.light.spacing,
+        ...customTheme?.light?.spacing,
+      },
+      borderRadius: {
+        ...defaultTheme.light.borderRadius,
+        ...customTheme?.light?.borderRadius,
+      },
+      shadows: {
+        ...defaultTheme.light.shadows,
+        ...customTheme?.light?.shadows,
+      },
+    },
+    dark: {
+      ...defaultTheme.dark,
+      ...customTheme?.dark,
+      colors: {
+        ...defaultTheme.dark.colors,
+        ...customTheme?.dark?.colors,
+        text: {
+          ...defaultTheme.dark.colors.text,
+          ...customTheme?.dark?.colors?.text,
+        },
+        accent: {
+          ...defaultTheme.dark.colors.accent,
+          ...customTheme?.dark?.colors?.accent,
+        },
+      },
+      spacing: {
+        ...defaultTheme.dark.spacing,
+        ...customTheme?.dark?.spacing,
+      },
+      borderRadius: {
+        ...defaultTheme.dark.borderRadius,
+        ...customTheme?.dark?.borderRadius,
+      },
+      shadows: {
+        ...defaultTheme.dark.shadows,
+        ...customTheme?.dark?.shadows,
+      },
+    },
   };
 
   // Listen for system theme changes

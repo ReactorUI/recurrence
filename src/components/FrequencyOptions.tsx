@@ -128,69 +128,72 @@ export function FrequencyOptions({
             </label>
 
             {settings.type === 'multiple' && (
-              <div className="ml-7 space-y-3">
-                <div className="flex items-center space-x-3">
+              <div className="ml-7 space-y-4">
+                <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-700">
                     Number of occurrences:
                   </span>
-                  <input
-                    type="number"
-                    min="1"
-                    max={maxOccurrences}
-                    value={times.length}
-                    readOnly
-                    className="w-16 px-2 py-1 text-sm border border-gray-300 rounded bg-gray-100"
-                  />
+                  <span className="text-sm font-bold text-gray-900 bg-blue-50 px-2 py-1 rounded border border-blue-200">
+                    {times.length}
+                  </span>
                   <span className="text-xs text-gray-500">
                     (Max: {maxOccurrences})
                   </span>
                 </div>
 
-                <div className="space-y-2">
-                  {timeSlots.map((slot, index) => (
-                    <div
-                      key={slot.id}
-                      className="flex items-center space-x-3 bg-blue-50 p-2 rounded border border-blue-200"
-                    >
-                      <span className="text-sm font-medium text-gray-700">
-                        Time {index + 1}:
-                      </span>
-                      <select
-                        value={slot.time}
-                        onChange={(e) =>
-                          updateTimeSlot(slot.id, e.target.value)
-                        }
-                        className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
+                <div>
+                  <div className="text-sm font-medium text-gray-700 mb-2">
+                    Time slots:
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {timeSlots.map((slot, index) => (
+                      <div
+                        key={slot.id}
+                        className="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm"
                       >
-                        {TIME_OPTIONS.map((time) => (
-                          <option key={time} value={time}>
-                            {time}
-                          </option>
-                        ))}
-                      </select>
-                      {canRemove && (
-                        <button
-                          type="button"
-                          onClick={() => removeTimeSlot(slot.id)}
-                          className="p-1 text-red-600 hover:bg-red-100 rounded"
+                        <span className="text-xs font-medium text-blue-600">
+                          #{index + 1}
+                        </span>
+                        <select
+                          value={slot.time}
+                          onChange={(e) =>
+                            updateTimeSlot(slot.id, e.target.value)
+                          }
+                          className="text-sm border-0 bg-transparent focus:ring-0 focus:outline-none p-0 m-0 min-w-0"
+                          style={{ width: 'auto' }}
                         >
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                          {TIME_OPTIONS.map((time) => (
+                            <option key={time} value={time}>
+                              {time}
+                            </option>
+                          ))}
+                        </select>
+                        {canRemove && (
+                          <button
+                            type="button"
+                            onClick={() => removeTimeSlot(slot.id)}
+                            className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            title="Remove time slot"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
 
-                {canAddMore && (
-                  <button
-                    type="button"
-                    onClick={addTimeSlot}
-                    className="flex items-center space-x-2 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-                  >
-                    <Plus className="h-4 w-4" />
-                    <span>Add Time Slot</span>
-                  </button>
-                )}
+                    {canAddMore && (
+                      <button
+                        type="button"
+                        onClick={addTimeSlot}
+                        className="flex items-center space-x-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm border border-blue-600"
+                        title="Add time slot"
+                      >
+                        <Plus className="h-3 w-3" />
+                        <span>Add</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
           </div>

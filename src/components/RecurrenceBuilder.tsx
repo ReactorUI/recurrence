@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ChevronRight, Sun, Moon, Monitor } from 'lucide-react';
 import { clsx } from 'clsx';
 import { RecurrenceBuilderProps, RecurrenceType } from '../types';
@@ -34,7 +34,71 @@ export function RecurrenceBuilder({
     onSummaryChange
   );
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
-  const { theme, mode, toggleMode } = useTheme();
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to content when expanded
+  useEffect(() => {
+    if (!isCollapsed && collapsible && contentRef.current) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        contentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }, 100);
+    }
+  }, [isCollapsed, collapsible]);
+
+  // Make theme optional - use default values if no ThemeProvider
+  let theme, mode, toggleMode;
+  try {
+    const themeContext = useTheme();
+    theme = themeContext.theme;
+    mode = themeContext.mode;
+    toggleMode = themeContext.toggleMode;
+  } catch (error) {
+    // Fallback to default theme when no ThemeProvider is available
+    const defaultTheme = {
+      colors: {
+        primary: '#3b82f6',
+        primaryHover: '#2563eb',
+        secondary: '#6b7280',
+        background: '#ffffff',
+        surface: '#f8fafc',
+        border: '#e2e8f0',
+        text: {
+          primary: '#1f2937',
+          secondary: '#6b7280',
+          accent: '#3b82f6',
+        },
+        accent: {
+          background: '#dbeafe',
+          border: '#93c5fd',
+          text: '#1e40af',
+        },
+      },
+      spacing: {
+        xs: '0.25rem',
+        sm: '0.5rem',
+        md: '1rem',
+        lg: '1.5rem',
+        xl: '2rem',
+      },
+      borderRadius: {
+        sm: '0.25rem',
+        md: '0.5rem',
+        lg: '0.75rem',
+      },
+      shadows: {
+        sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        md: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+        lg: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+      },
+    };
+    theme = defaultTheme;
+    mode = 'light';
+    toggleMode = () => {}; // No-op function when no provider
+  }
 
   const handleTypeChange = (type: RecurrenceType) => {
     updateSettings({ type });
@@ -207,117 +271,126 @@ export function RecurrenceBuilder({
       )}
       style={useCustomStyling ? styles.container : {}}
     >
-      <button
-        type="button"
-        onClick={() => setIsCollapsed(!isCollapsed)}
+      {/* Sticky Header */}
+      <div
         className={clsx(
-          !useCustomStyling &&
-            'w-full flex items-center justify-between p-4 text-left bg-blue-50 hover:bg-blue-100 transition-colors border-b border-gray-200',
-          !useCustomStyling && (isCollapsed ? 'rounded-lg' : 'rounded-t-lg')
+          !useCustomStyling && 'sticky top-0 z-10',
+          !isCollapsed && !useCustomStyling && 'shadow-sm'
         )}
         style={
           useCustomStyling
             ? {
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: theme.spacing.lg,
-                backgroundColor: theme.colors.surface,
-                border: 'none',
-                borderBottom: `1px solid ${theme.colors.border}`,
-                borderRadius: isCollapsed
-                  ? theme.borderRadius.lg
-                  : `${theme.borderRadius.lg} ${theme.borderRadius.lg} 0 0`,
-                cursor: 'pointer',
-                transition: 'background-color 0.2s ease',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                ...(!isCollapsed && { boxShadow: theme.shadows.sm }),
               }
             : {}
         }
       >
-        <div className="flex items-center space-x-3">
-          <ChevronRight
-            className={clsx(
-              'h-5 w-5 transition-transform',
-              !useCustomStyling && 'text-blue-600',
-              !isCollapsed && 'transform rotate-90'
-            )}
-            style={
-              useCustomStyling
-                ? {
-                    color: theme.colors.text.accent,
-                    transform: !isCollapsed ? 'rotate(90deg)' : 'none',
-                  }
-                : {}
-            }
-          />
-          <span
-            className={!useCustomStyling ? 'font-medium text-gray-900' : ''}
-            style={
-              useCustomStyling
-                ? {
-                    fontWeight: 500,
-                    color: theme.colors.text.primary,
-                  }
-                : {}
-            }
-          >
-            Recurrence Settings
-          </span>
-        </div>
-        <div className="flex items-center space-x-3">
-          <span
-            className={
-              !useCustomStyling ? 'text-sm text-gray-600 truncate max-w-md' : ''
-            }
-            style={
-              useCustomStyling
-                ? {
-                    fontSize: '0.875rem',
-                    color: theme.colors.text.secondary,
-                    maxWidth: '24rem',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }
-                : {}
-            }
-          >
-            {summary}
-          </span>
-          {showThemeToggle && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleMode();
-              }}
-              className={
+        <button
+          type="button"
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={clsx(
+            !useCustomStyling &&
+              'w-full flex items-center justify-between p-4 text-left bg-blue-50 hover:bg-blue-100 transition-colors border-b border-gray-200',
+            !useCustomStyling && (isCollapsed ? 'rounded-lg' : 'rounded-t-lg')
+          )}
+          style={
+            useCustomStyling
+              ? {
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: theme.spacing.lg,
+                  backgroundColor: theme.colors.surface,
+                  border: 'none',
+                  borderBottom: `1px solid ${theme.colors.border}`,
+                  borderRadius: isCollapsed
+                    ? theme.borderRadius.lg
+                    : `${theme.borderRadius.lg} ${theme.borderRadius.lg} 0 0`,
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s ease',
+                }
+              : {}
+          }
+        >
+          <div className="flex items-center space-x-3 flex-1 min-w-0">
+            <ChevronRight
+              className={clsx(
+                'h-5 w-5 transition-transform duration-200 ease-in-out flex-shrink-0',
+                !useCustomStyling && 'text-blue-600',
+                !isCollapsed && 'rotate-90'
+              )}
+              style={
                 useCustomStyling
-                  ? ''
-                  : 'p-1 rounded hover:bg-blue-200 transition-colors'
+                  ? {
+                      color: theme.colors.text.accent,
+                      transform: !isCollapsed
+                        ? 'rotate(90deg)'
+                        : 'rotate(0deg)',
+                      transition: 'transform 0.2s ease-in-out',
+                      flexShrink: 0,
+                    }
+                  : {}
+              }
+            />
+            <span
+              className={
+                !useCustomStyling ? 'text-sm text-gray-700 flex-1 min-w-0' : ''
               }
               style={
                 useCustomStyling
                   ? {
-                      padding: theme.spacing.xs,
-                      borderRadius: theme.borderRadius.sm,
-                      backgroundColor: 'transparent',
-                      border: 'none',
-                      color: theme.colors.text.accent,
-                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      color: theme.colors.text.primary,
+                      flex: 1,
+                      minWidth: 0,
                     }
                   : {}
               }
-              title={`Switch to ${mode === 'light' ? 'dark' : mode === 'dark' ? 'system' : 'light'} mode`}
             >
-              {getThemeIcon()}
-            </button>
-          )}
-        </div>
-      </button>
+              {summary}
+            </span>
+          </div>
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            {showThemeToggle && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleMode();
+                }}
+                className={
+                  useCustomStyling
+                    ? ''
+                    : 'p-1 rounded hover:bg-blue-200 transition-colors'
+                }
+                style={
+                  useCustomStyling
+                    ? {
+                        padding: theme.spacing.xs,
+                        borderRadius: theme.borderRadius.sm,
+                        backgroundColor: 'transparent',
+                        border: 'none',
+                        color: theme.colors.text.accent,
+                        cursor: 'pointer',
+                      }
+                    : {}
+                }
+                title={`Switch to ${mode === 'light' ? 'dark' : mode === 'dark' ? 'system' : 'light'} mode`}
+              >
+                {getThemeIcon()}
+              </button>
+            )}
+          </div>
+        </button>
+      </div>
 
+      {/* Collapsible Content */}
       {!isCollapsed && (
         <div
+          ref={contentRef}
           style={
             useCustomStyling
               ? { padding: theme.spacing.xl }

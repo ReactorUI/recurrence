@@ -869,8 +869,6 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 - 📖 **Documentation**: Check this README and inline TypeScript types
 - 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ReactorUI/recurrence/issues)
-- 💡 **Feature Requests**: [GitHub Discussions](https://github.com/ReactorUI/recurrence/discussions)
-- 💬 **Community**: [Discord Server](https://discord.gg/reactorui) (if available)
 
 ## Related Projects
 

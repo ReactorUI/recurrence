@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { Plus, X } from 'lucide-react';
 import { FrequencySettings, FrequencyType } from '../types';
 import { useTimeSlots } from '../hooks';
@@ -40,6 +40,14 @@ export function FrequencyOptions({
     times,
   } = useTimeSlots(settings.times || [DEFAULT_TIME], maxOccurrences);
 
+  // Use ref to store the latest times to avoid stale closures
+  const timesRef = useRef(times);
+  timesRef.current = times;
+
+  // Use ref to store onChange to avoid infinite loops
+  const onChangeRef = useRef(onChange);
+  onChangeRef.current = onChange;
+
   const handleTypeChange = (type: FrequencyType) => {
     let newSettings: FrequencySettings = { type };
 
@@ -48,8 +56,8 @@ export function FrequencyOptions({
         newSettings.singleTime = settings.singleTime || DEFAULT_TIME;
         break;
       case 'multiple':
-        newSettings.count = times.length;
-        newSettings.times = times;
+        newSettings.count = timesRef.current.length;
+        newSettings.times = timesRef.current;
         break;
       case 'range':
         newSettings.startTime = settings.startTime || DEFAULT_TIME;
@@ -57,7 +65,7 @@ export function FrequencyOptions({
         break;
     }
 
-    onChange(newSettings);
+    onChangeRef.current(newSettings);
   };
 
   const handleStartTimeChange = (startTime: string) => {
@@ -70,11 +78,25 @@ export function FrequencyOptions({
       endTime = TIME_OPTIONS[newEndIndex];
     }
 
-    onChange({ ...settings, startTime, endTime });
+    onChangeRef.current({ ...settings, startTime, endTime });
   };
 
-  // Update settings when time slots change (remove the useEffect to prevent loops)
-  // The parent component will handle this through the onChange prop
+  // Update settings when time slots change - use stable dependencies
+  useEffect(() => {
+    if (settings.type === 'multiple') {
+      // Only update if times actually changed
+      const currentTimes = times.join(',');
+      const settingsTimes = (settings.times || []).join(',');
+
+      if (currentTimes !== settingsTimes || settings.count !== times.length) {
+        onChangeRef.current({
+          ...settings,
+          count: times.length,
+          times: [...times], // Create new array to avoid reference issues
+        });
+      }
+    }
+  }, [times.join(','), settings.type, settings.count]); // Use string comparison for times array
 
   return (
     <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">

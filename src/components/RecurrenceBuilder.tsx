@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import { ChevronRight, Sun, Moon, Monitor } from 'lucide-react';
 import { clsx } from 'clsx';
 import { RecurrenceBuilderProps, RecurrenceType } from '../types';
@@ -35,19 +35,6 @@ export function RecurrenceBuilder({
   );
   const [isCollapsed, setIsCollapsed] = useState(defaultCollapsed);
   const contentRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll to content when expanded
-  useEffect(() => {
-    if (!isCollapsed && collapsible && contentRef.current) {
-      // Small delay to ensure content is rendered
-      setTimeout(() => {
-        contentRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }, 100);
-    }
-  }, [isCollapsed, collapsible]);
 
   // Make theme optional - use default values if no ThemeProvider
   let theme, mode, toggleMode;
@@ -99,6 +86,19 @@ export function RecurrenceBuilder({
     mode = 'light';
     toggleMode = () => {}; // No-op function when no provider
   }
+
+  // Auto-scroll to content when expanded - keep header visible
+  useEffect(() => {
+    if (!isCollapsed && collapsible && contentRef.current) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        contentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest', // Changed from 'start' to 'nearest' to keep header visible
+        });
+      }, 100);
+    }
+  }, [isCollapsed, collapsible]);
 
   const handleTypeChange = (type: RecurrenceType) => {
     updateSettings({ type });
@@ -274,16 +274,22 @@ export function RecurrenceBuilder({
       {/* Sticky Header */}
       <div
         className={clsx(
-          !useCustomStyling && 'sticky top-0 z-10',
-          !isCollapsed && !useCustomStyling && 'shadow-sm'
+          !useCustomStyling && 'sticky top-0 z-20 bg-white',
+          !isCollapsed &&
+            !useCustomStyling &&
+            'shadow-md border-b border-gray-200'
         )}
         style={
           useCustomStyling
             ? {
                 position: 'sticky',
                 top: 0,
-                zIndex: 10,
-                ...(!isCollapsed && { boxShadow: theme.shadows.sm }),
+                zIndex: 20,
+                backgroundColor: theme.colors.background,
+                ...(!isCollapsed && {
+                  boxShadow: theme.shadows.md,
+                  borderBottom: `1px solid ${theme.colors.border}`,
+                }),
               }
             : {}
         }
@@ -319,9 +325,9 @@ export function RecurrenceBuilder({
           <div className="flex items-center space-x-3 flex-1 min-w-0">
             <ChevronRight
               className={clsx(
-                'h-5 w-5 transition-transform duration-200 ease-in-out flex-shrink-0',
+                'h-5 w-5 flex-shrink-0 transition-transform duration-200 ease-in-out',
                 !useCustomStyling && 'text-blue-600',
-                !isCollapsed && 'rotate-90'
+                !isCollapsed && 'transform rotate-90'
               )}
               style={
                 useCustomStyling

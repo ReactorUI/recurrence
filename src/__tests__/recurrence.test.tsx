@@ -232,10 +232,13 @@ describe('RecurrenceBuilder Integration Tests', () => {
     const headerButton = screen.getByRole('button');
     await user.click(headerButton);
 
-    // Wait for the auto-scroll to trigger
+    // Wait for the auto-scroll to trigger with center positioning
     await waitFor(
       () => {
-        expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+        expect(Element.prototype.scrollIntoView).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          block: 'center',
+        });
       },
       { timeout: 200 }
     );
@@ -264,13 +267,14 @@ describe('RecurrenceBuilder Integration Tests', () => {
     await user.click(screen.getByLabelText('Occurs multiple times per day'));
 
     await waitFor(() => {
-      expect(screen.getByText('Number of occurrences:')).toBeInTheDocument();
-      // Check that the occurrence count is styled as text, not input
+      // Look for the time slot count specifically
       expect(screen.getByText('1')).toBeInTheDocument();
+      // Look for max occurrences text which is unique
+      expect(screen.getByText(/Max:/)).toBeInTheDocument();
     });
   });
 
-  test('Time slots display horizontally', async () => {
+  test('Time slots display with simple dropdowns', async () => {
     const { RecurrenceBuilder } = await import(
       '../components/RecurrenceBuilder'
     );
@@ -287,8 +291,9 @@ describe('RecurrenceBuilder Integration Tests', () => {
     await user.click(screen.getByLabelText('Occurs multiple times per day'));
 
     await waitFor(() => {
-      expect(screen.getByText('Time slots:')).toBeInTheDocument();
-      expect(screen.getByText('#1')).toBeInTheDocument();
+      // Should have "Time slots:" labels (one for count, one for actual slots)
+      const timeSlotLabels = screen.getAllByText(/Time slots:/);
+      expect(timeSlotLabels.length).toBeGreaterThanOrEqual(1);
       expect(screen.getByText('Add')).toBeInTheDocument();
     });
 
@@ -296,7 +301,14 @@ describe('RecurrenceBuilder Integration Tests', () => {
     await user.click(screen.getByText('Add'));
 
     await waitFor(() => {
-      expect(screen.getByText('#2')).toBeInTheDocument();
+      // Wait for the time slot count to change to 2
+      expect(screen.getByText('2')).toBeInTheDocument();
+    });
+
+    // Test that we can find remove buttons for time slots
+    await waitFor(() => {
+      const removeButtons = screen.getAllByTitle('Remove time slot');
+      expect(removeButtons.length).toBe(2);
     });
   });
 

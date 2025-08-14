@@ -87,14 +87,14 @@ export function RecurrenceBuilder({
     toggleMode = () => {}; // No-op function when no provider
   }
 
-  // Auto-scroll to content when expanded - keep header visible
+  // Auto-scroll to content when expanded - scroll to middle
   useEffect(() => {
     if (!isCollapsed && collapsible && contentRef.current) {
       // Small delay to ensure content is rendered
       setTimeout(() => {
         contentRef.current?.scrollIntoView({
           behavior: 'smooth',
-          block: 'nearest', // Changed from 'start' to 'nearest' to keep header visible
+          block: 'center', // Changed to 'center' to scroll to middle
         });
       }, 100);
     }
@@ -327,7 +327,7 @@ export function RecurrenceBuilder({
               className={clsx(
                 'h-5 w-5 flex-shrink-0 transition-transform duration-200 ease-in-out',
                 !useCustomStyling && 'text-blue-600',
-                !isCollapsed && 'transform rotate-90'
+                !isCollapsed ? 'rotate-90' : 'rotate-0'
               )}
               style={
                 useCustomStyling

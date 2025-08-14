@@ -1,6 +1,6 @@
 {
   "name": "@reactorui/recurrence",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "A powerful, flexible recurrence rule builder for React applications",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

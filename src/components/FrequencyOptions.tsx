@@ -130,8 +130,8 @@ export function FrequencyOptions({
             {settings.type === 'multiple' && (
               <div className="ml-7 space-y-4">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-700">
-                    Number of occurrences:
+                  <span className="text-sm font-medium text-gray-700">
+                    Time slots:
                   </span>
                   <span className="text-sm font-bold text-gray-900 bg-blue-50 px-2 py-1 rounded border border-blue-200">
                     {times.length}
@@ -142,25 +142,15 @@ export function FrequencyOptions({
                 </div>
 
                 <div>
-                  <div className="text-sm font-medium text-gray-700 mb-2">
-                    Time slots:
-                  </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2 items-center">
                     {timeSlots.map((slot, index) => (
-                      <div
-                        key={slot.id}
-                        className="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-3 py-2 shadow-sm"
-                      >
-                        <span className="text-xs font-medium text-blue-600">
-                          #{index + 1}
-                        </span>
+                      <div key={slot.id} className="flex items-center gap-1">
                         <select
                           value={slot.time}
                           onChange={(e) =>
                             updateTimeSlot(slot.id, e.target.value)
                           }
-                          className="text-sm border-0 bg-transparent focus:ring-0 focus:outline-none p-0 m-0 min-w-0"
-                          style={{ width: 'auto' }}
+                          className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500"
                         >
                           {TIME_OPTIONS.map((time) => (
                             <option key={time} value={time}>
@@ -172,10 +162,10 @@ export function FrequencyOptions({
                           <button
                             type="button"
                             onClick={() => removeTimeSlot(slot.id)}
-                            className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition-colors"
+                            className="p-1 text-red-500 hover:text-red-700 rounded transition-colors"
                             title="Remove time slot"
                           >
-                            <X className="h-3 w-3" />
+                            <X className="h-4 w-4" />
                           </button>
                         )}
                       </div>
@@ -185,10 +175,10 @@ export function FrequencyOptions({
                       <button
                         type="button"
                         onClick={addTimeSlot}
-                        className="flex items-center space-x-2 px-3 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm border border-blue-600"
+                        className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                         title="Add time slot"
                       >
-                        <Plus className="h-3 w-3" />
+                        <Plus className="h-4 w-4" />
                         <span>Add</span>
                       </button>
                     )}

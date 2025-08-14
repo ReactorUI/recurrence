@@ -18,6 +18,9 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 });
 
+// Mock scrollIntoView
+Element.prototype.scrollIntoView = jest.fn();
+
 describe('Utils Tests', () => {
   test('TIME_OPTIONS has correct values', () => {
     const { TIME_OPTIONS, DEFAULT_TIME } = require('../utils');
@@ -171,6 +174,22 @@ describe('RecurrenceBuilder Integration Tests', () => {
     });
   });
 
+  test('RecurrenceBuilder works without ThemeProvider', async () => {
+    const { RecurrenceBuilder } = await import(
+      '../components/RecurrenceBuilder'
+    );
+    const mockOnChange = jest.fn();
+
+    // Should not throw error when used without ThemeProvider
+    expect(() => {
+      render(<RecurrenceBuilder onChange={mockOnChange} collapsible={false} />);
+    }).not.toThrow();
+
+    // Check basic elements still render
+    expect(screen.getByText('Recurrence Pattern')).toBeInTheDocument();
+    expect(screen.getByText(/Occurs every day/)).toBeInTheDocument();
+  });
+
   test('Collapsible functionality works', async () => {
     const { RecurrenceBuilder } = await import(
       '../components/RecurrenceBuilder'
@@ -184,16 +203,42 @@ describe('RecurrenceBuilder Integration Tests', () => {
       </ThemeProvider>
     );
 
-    // Should be collapsed initially
-    expect(screen.getByText('Recurrence Settings')).toBeInTheDocument();
+    // Should be collapsed initially - look for the summary text instead
+    expect(screen.getByText(/Occurs every day/)).toBeInTheDocument();
     expect(screen.queryByText('Recurrence Pattern')).not.toBeInTheDocument();
 
-    // Click to expand
-    await user.click(screen.getByText('Recurrence Settings'));
+    // Click the header button to expand (look for the button with the summary)
+    const headerButton = screen.getByRole('button');
+    await user.click(headerButton);
 
     await waitFor(() => {
       expect(screen.getByText('Recurrence Pattern')).toBeInTheDocument();
     });
+  });
+
+  test('Auto-scroll functionality works when expanded', async () => {
+    const { RecurrenceBuilder } = await import(
+      '../components/RecurrenceBuilder'
+    );
+    const { ThemeProvider } = await import('../components/ThemeProvider');
+    const user = userEvent.setup();
+
+    render(
+      <ThemeProvider>
+        <RecurrenceBuilder onChange={jest.fn()} defaultCollapsed={true} />
+      </ThemeProvider>
+    );
+
+    const headerButton = screen.getByRole('button');
+    await user.click(headerButton);
+
+    // Wait for the auto-scroll to trigger
+    await waitFor(
+      () => {
+        expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+      },
+      { timeout: 200 }
+    );
   });
 
   test('Frequency options work correctly', async () => {
@@ -220,6 +265,38 @@ describe('RecurrenceBuilder Integration Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Number of occurrences:')).toBeInTheDocument();
+      // Check that the occurrence count is styled as text, not input
+      expect(screen.getByText('1')).toBeInTheDocument();
+    });
+  });
+
+  test('Time slots display horizontally', async () => {
+    const { RecurrenceBuilder } = await import(
+      '../components/RecurrenceBuilder'
+    );
+    const { ThemeProvider } = await import('../components/ThemeProvider');
+    const user = userEvent.setup();
+
+    render(
+      <ThemeProvider>
+        <RecurrenceBuilder onChange={jest.fn()} collapsible={false} />
+      </ThemeProvider>
+    );
+
+    // Switch to multiple times
+    await user.click(screen.getByLabelText('Occurs multiple times per day'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Time slots:')).toBeInTheDocument();
+      expect(screen.getByText('#1')).toBeInTheDocument();
+      expect(screen.getByText('Add')).toBeInTheDocument();
+    });
+
+    // Test adding a time slot
+    await user.click(screen.getByText('Add'));
+
+    await waitFor(() => {
+      expect(screen.getByText('#2')).toBeInTheDocument();
     });
   });
 

@@ -22,6 +22,10 @@ A powerful, flexible recurrence rule builder for React applications. Create comp
 
 ```bash
 npm install @reactorui/recurrence
+# or
+yarn add @reactorui/recurrence
+# or
+pnpm add @reactorui/recurrence
 ```
 
 ## Basic Usage

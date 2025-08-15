@@ -94,11 +94,16 @@ const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 // Export the context for direct access
 export { ThemeContext };
 
+// Deep partial type for theme configuration
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
 interface ThemeProviderProps {
   children: ReactNode;
   customTheme?: {
-    light?: Partial<ThemeConfig>;
-    dark?: Partial<ThemeConfig>;
+    light?: DeepPartial<ThemeConfig>;
+    dark?: DeepPartial<ThemeConfig>;
   };
   defaultMode?: ThemeMode;
   enableSystemTheme?: boolean;

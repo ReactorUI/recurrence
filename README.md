@@ -2,9 +2,9 @@
 
 A powerful, flexible recurrence rule builder for React applications. Create complex recurring schedules with an intuitive UI that generates human-readable summaries and structured data.
 
-[![npm version](https://badge.fury.io/js/@reactorui%2Frecurrence.svg)](https://badge.fury.io/js/@reactorui%2Frecurrence)
+[![npm](https://img.shields.io/npm/dw/@reactorui/datagrid)](https://www.npmjs.com/package/@reactorui/datagrid)
+[![npm version](https://img.shields.io/npm/v/@reactorui/datagrid)](https://www.npmjs.com/package/@reactorui/datagrid)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
 ## Features
 
